@@ -989,7 +989,7 @@ class HydraEngine {
     report += '\n--- SCOPE AND LIMITATIONS ---\n';
     report += 'This assessment was conducted in a controlled environment. Real-world results\n';
     report += 'may vary based on network conditions, security controls not modeled, and\n';
-    report += 'environmental factors. The simulation does not account for:\n';
+    report += 'environmental factors. The assessment does not account for:\n';
     report += '  - Physical security controls\n';
     report += '  - Social engineering resistance\n';
     report += '  - Incident response team reaction time\n';
@@ -1729,7 +1729,7 @@ export function renderHydra(main) {
     };
 
     let html = '<h2 class="pg-h2">MITRE ATT&amp;CK Coverage Heatmap</h2>' +
-      '<p class="muted" style="margin-bottom:16px">Techniques used in this simulation highlighted in red. Click to see detection guidance.</p>' +
+      '<p class="muted" style="margin-bottom:16px">Techniques used in this engagement highlighted in red. Click to see detection guidance.</p>' +
       '<div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:12px">';
 
     tactics.forEach(tactic => {
@@ -1767,7 +1767,7 @@ export function renderHydra(main) {
 
   function renderWhatIfTab(container) {
     if (engine.hosts.length === 0) {
-      container.innerHTML = '<p class="muted" style="padding:40px;text-align:center">Load and run a simulation first, then explore what-if scenarios.</p>';
+      container.innerHTML = '<p class="muted" style="padding:40px;text-align:center">Load and run an operation first, then explore what-if scenarios.</p>';
       return;
     }
     var allControls = ['edr', 'av', 'siem_agent', 'waf', 'ips', 'dlp', 'mfa', 'proxy', 'ids'];
@@ -1780,7 +1780,7 @@ export function renderHydra(main) {
     };
 
     var html = '<h2 class="pg-h2">What-If Security Analysis</h2>' +
-      '<p class="muted" style="margin-bottom:16px">Toggle security controls on each host to see how the attack outcome would change. Modify controls and re-run the simulation.</p>';
+      '<p class="muted" style="margin-bottom:16px">Toggle security controls on each host to see how the attack outcome would change. Modify controls and re-run the operation.</p>';
 
     html += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.78rem">' +
       '<thead><tr style="border-bottom:2px solid var(--line)">' +
@@ -1807,7 +1807,7 @@ export function renderHydra(main) {
     html += '</tbody></table></div>';
 
     html += '<div style="margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">' +
-      '<button class="btn sm" id="wi-rerun">Re-run Simulation with Changes</button>' +
+      '<button class="btn sm" id="wi-rerun">Re-run Operation with Changes</button>' +
       '<button class="btn sm ghost" id="wi-addall-edr">Add EDR Everywhere</button>' +
       '<button class="btn sm ghost" id="wi-addall-siem">Add SIEM Everywhere</button>' +
       '<button class="btn sm ghost" id="wi-reset-ctrl">Reset to Original</button>' +
@@ -2312,7 +2312,7 @@ export function renderHydra(main) {
     if (campaigns.length > 0) {
       html += '<h3 style="font-size:.9rem;margin-top:24px;margin-bottom:10px">Campaign History</h3>' +
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
-          '<span style="font-size:.72rem;color:var(--mut)">' + campaigns.length + ' past simulations</span>' +
+          '<span style="font-size:.72rem;color:var(--mut)">' + campaigns.length + ' past operations</span>' +
           '<span style="flex:1"></span>' +
           '<button class="hy-btn hy-btn-ghost" id="hy-clear-history" style="padding:3px 8px;font-size:.6rem">CLEAR HISTORY</button>' +
         '</div>';
@@ -2383,7 +2383,7 @@ export function renderHydra(main) {
       return e.msg.indexOf('[SHELL]') >= 0 || e.msg.indexOf('[MOVED]') >= 0 || e.msg.indexOf('[HARVEST]') >= 0 || e.msg.indexOf('[IMPLANT]') >= 0 || e.msg.indexOf('[DATA]') >= 0 || e.msg.indexOf('Discovered') >= 0 || e.msg.indexOf('[VULN]') >= 0;
     });
     if (attacks.length === 0) {
-      container.innerHTML = '<p class="muted" style="padding:40px;text-align:center">Run a simulation first to view the attack timeline.</p>';
+      container.innerHTML = '<p class="muted" style="padding:40px;text-align:center">Run an operation first to view the attack timeline.</p>';
       return;
     }
     // Calculate dwell times
@@ -2428,7 +2428,7 @@ export function renderHydra(main) {
         'Median dwell time (real-world): <span style="color:var(--acc)">16 days</span> (Mandiant M-Trends 2024)<br>' +
         'Median time to lateral movement: <span style="color:var(--acc)">1 hour 42 minutes</span> (CrowdStrike 2024)<br>' +
         'Median ransomware deployment: <span style="color:var(--acc)">4-14 days</span> after initial access<br>' +
-        'HYDRA simulation completed in <span style="color:#ff1744">' + engine.tick + ' ticks</span> — each tick represents a discrete action phase.' +
+        'HYDRA operation completed in <span style="color:#ff1744">' + engine.tick + ' ticks</span> — each tick represents a discrete action phase.' +
       '</div></div>';
 
     // Visual timeline
@@ -2462,7 +2462,7 @@ export function renderHydra(main) {
     var exfils = engine.log.filter(function(e) { return e.msg.indexOf('[DATA]') >= 0; });
     var persists = engine.log.filter(function(e) { return e.msg.indexOf('[IMPLANT]') >= 0; });
     if (exploits.length === 0 && laterals.length === 0) {
-      container.innerHTML = '<p class="muted" style="padding:40px;text-align:center">Run a simulation first to generate the pivot map.</p>';
+      container.innerHTML = '<p class="muted" style="padding:40px;text-align:center">Run an operation first to generate the pivot map.</p>';
       return;
     }
     // Build attack chain
@@ -2555,10 +2555,10 @@ export function renderHydra(main) {
     }
     var exfilHosts = chains.filter(function(c) { return c.type === 'objective' && c.objective === 'Data Exfiltration'; });
     if (exfilHosts.length > 0) {
-      narrative += 'Data exfiltration was simulated from ' + exfilHosts.length + ' high-value target(s) including ' + exfilHosts.map(function(c) { return c.host; }).join(', ') + '. ';
+      narrative += 'Data exfiltration was executed from ' + exfilHosts.length + ' high-value target(s) including ' + exfilHosts.map(function(c) { return c.host; }).join(', ') + '. ';
     }
     if (engine.intel.ransomware) {
-      narrative += 'A ransomware scenario was simulated, encrypting ' + engine.intel.ransomware.totalGB + ' GB across compromised hosts. ';
+      narrative += 'A ransomware scenario was deployed, encrypting ' + engine.intel.ransomware.totalGB + ' GB across compromised hosts. ';
       if (engine.intel.ransomware.backupCompromised) narrative += 'CRITICALLY, the backup server was also compromised, eliminating the primary recovery option. ';
     }
     narrative += 'The full attack chain was completed in ' + engine.tick + ' operational phases.';
@@ -2606,7 +2606,7 @@ export function renderHydra(main) {
       }
     });
     if (usedTechniques.length === 0) {
-      container.innerHTML = '<p class="muted" style="padding:40px;text-align:center">Run a simulation first to generate detection rules.</p>';
+      container.innerHTML = '<p class="muted" style="padding:40px;text-align:center">Run an operation first to generate detection rules.</p>';
       return;
     }
 
@@ -2639,7 +2639,7 @@ export function renderHydra(main) {
         var sigma = 'title: Detect ' + tmpl.title + '\n';
         sigma += 'id: hydra-' + t.mitre.toLowerCase().replace(/\./g, '-') + '\n';
         sigma += 'status: experimental\n';
-        sigma += 'description: Detects ' + tmpl.title.toLowerCase() + ' activity observed during HYDRA simulation\n';
+        sigma += 'description: Detects ' + tmpl.title.toLowerCase() + ' activity observed during HYDRA operation\n';
         sigma += 'logsource:\n';
         sigma += '    product: ' + tmpl.product + '\n';
         sigma += '    service: ' + tmpl.service + '\n';
@@ -2683,7 +2683,7 @@ export function renderHydra(main) {
     });
 
     var html = '<h2 style="font-size:1rem;font-weight:700;letter-spacing:.05em;margin:0 0 4px">AUTO-GENERATED DETECTION RULES</h2>' +
-      '<p style="font-size:.75rem;color:var(--mut);margin:0 0 16px">' + sigmaRules.length + ' Sigma rules, ' + snortRules.length + ' Snort/Suricata rules, ' + yaraRules.length + ' YARA rules generated from simulation results.</p>';
+      '<p style="font-size:.75rem;color:var(--mut);margin:0 0 16px">' + sigmaRules.length + ' Sigma rules, ' + snortRules.length + ' Snort/Suricata rules, ' + yaraRules.length + ' YARA rules generated from operation results.</p>';
 
     // Sigma rules
     if (sigmaRules.length > 0) {
