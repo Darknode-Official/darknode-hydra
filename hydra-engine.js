@@ -1143,18 +1143,18 @@ class HydraCanvas {
       var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
       hosts.forEach(h => { minX = Math.min(minX, h.x); minY = Math.min(minY, h.y); maxX = Math.max(maxX, h.x); maxY = Math.max(maxY, h.y); });
       var pad = 50;
-      ctx.fillStyle = segColors[seg] || 'rgba(255,255,255,0.02)';
+      ctx.fillStyle = segColors[seg] || 'rgba(255,255,255,0.03)';
       ctx.fillRect(minX - pad, minY - pad, maxX - minX + pad * 2, maxY - minY + pad * 2);
-      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = 'rgba(0,200,255,0.12)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 4]);
       ctx.strokeRect(minX - pad, minY - pad, maxX - minX + pad * 2, maxY - minY + pad * 2);
       ctx.setLineDash([]);
-      ctx.font = '9px system-ui';
-      ctx.fillStyle = 'rgba(255,255,255,0.2)';
+      ctx.font = 'bold 10px system-ui';
+      ctx.fillStyle = 'rgba(0,200,255,0.35)';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
-      ctx.fillText(seg.toUpperCase(), minX - pad + 6, minY - pad + 4);
+      ctx.fillText(seg.toUpperCase(), minX - pad + 8, minY - pad + 6);
     });
 
     // Draw connections
@@ -1166,14 +1166,14 @@ class HydraCanvas {
       ctx.moveTo(from.x, from.y);
       ctx.lineTo(to.x, to.y);
       const bothCompromised = from.sessions && from.sessions.length > 0 && to.sessions && to.sessions.length > 0;
-      ctx.strokeStyle = bothCompromised ? 'rgba(255,23,68,0.5)' : 'rgba(255,255,255,0.12)';
-      ctx.lineWidth = bothCompromised ? 2.5 : 1;
+      ctx.strokeStyle = bothCompromised ? 'rgba(255,23,68,0.7)' : 'rgba(0,200,255,0.18)';
+      ctx.lineWidth = bothCompromised ? 3 : 1.5;
       ctx.stroke();
       // Connection port label
       if (conn.rules && conn.rules[0] !== '*') {
         var mx = (from.x + to.x) / 2, my = (from.y + to.y) / 2;
-        ctx.font = '7px system-ui';
-        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.font = '9px system-ui';
+        ctx.fillStyle = 'rgba(0,200,255,0.4)';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(conn.rules.join(','), mx, my - 6);
@@ -1184,8 +1184,15 @@ class HydraCanvas {
         const px = from.x + (to.x - from.x) * pulse;
         const py = from.y + (to.y - from.y) * pulse;
         ctx.beginPath();
-        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
         ctx.fillStyle = '#ff1744';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(px, py, 10, 0, Math.PI * 2);
+        var pulseGrad = ctx.createRadialGradient(px, py, 3, px, py, 10);
+        pulseGrad.addColorStop(0, 'rgba(255,23,68,0.4)');
+        pulseGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = pulseGrad;
         ctx.fill();
       }
     });
@@ -1206,28 +1213,37 @@ class HydraCanvas {
         ctx.fillStyle = grad;
         ctx.fill();
       }
-      // Node circle
+      // Node circle with gradient fill
       ctx.beginPath();
       ctx.arc(h.x, h.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = '#0a0e16';
+      var nodeGrad = ctx.createRadialGradient(h.x - 5, h.y - 5, 2, h.x, h.y, r);
+      nodeGrad.addColorStop(0, '#1a2030');
+      nodeGrad.addColorStop(1, '#0a0e16');
+      ctx.fillStyle = nodeGrad;
       ctx.fill();
       ctx.strokeStyle = color;
-      ctx.lineWidth = this.selectedNode === h ? 3 : 2;
+      ctx.lineWidth = this.selectedNode === h ? 4 : 2.5;
+      ctx.stroke();
+      // Subtle outer glow on all nodes
+      ctx.beginPath();
+      ctx.arc(h.x, h.y, r + 3, 0, Math.PI * 2);
+      ctx.strokeStyle = color + '20';
+      ctx.lineWidth = 4;
       ctx.stroke();
       // Icon (first 2 chars of role)
       ctx.fillStyle = color;
-      ctx.font = 'bold 11px system-ui';
+      ctx.font = 'bold 12px system-ui';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       const icon = h.role.substring(0, 2).toUpperCase();
       ctx.fillText(icon, h.x, h.y);
       // Label
-      ctx.font = '10px system-ui';
-      ctx.fillStyle = '#ccc';
-      ctx.fillText(h.name, h.x, h.y + r + 14);
-      ctx.font = '9px system-ui';
-      ctx.fillStyle = '#888';
-      ctx.fillText(h.ip, h.x, h.y + r + 26);
+      ctx.font = 'bold 11px system-ui';
+      ctx.fillStyle = '#dde';
+      ctx.fillText(h.name, h.x, h.y + r + 16);
+      ctx.font = '10px monospace';
+      ctx.fillStyle = '#6688aa';
+      ctx.fillText(h.ip, h.x, h.y + r + 28);
     });
 
     // Draw C2 beacon lines
